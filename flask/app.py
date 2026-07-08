@@ -54,9 +54,27 @@ def get_todos():
 
 @app.route("/todos/<int:todo_id>")
 def get_todo(todo_id):
-    for todo in todos:
-        if todo["id"] == todo_id:
-            return jsonify(todo)
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT id, title FROM todos WHERE id = %s;",
+        (todo_id,)
+    )
+
+    row = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if row:
+        todo = {
+            "id": row[0],
+            "title": row[1]
+        }
+
+        return jsonify(todo)
 
     return jsonify({"error": "Todo not found"}), 404
 
