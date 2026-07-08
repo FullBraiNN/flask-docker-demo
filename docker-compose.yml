@@ -1,16 +1,29 @@
 services:
+
   flask:
     build: ./flask
-    restart: unless-stopped
     expose:
       - "5000"
 
   nginx:
-    image: nginx:1.28-alpine
-    restart: unless-stopped
+    image: nginx:latest
     ports:
       - "80:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - flask
+
+  postgres:
+    image: postgres:17
+
+    environment:
+      POSTGRES_DB: todo_db
+      POSTGRES_USER: todo_user
+      POSTGRES_PASSWORD: secret123
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
