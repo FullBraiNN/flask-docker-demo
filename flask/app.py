@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hello from Docker!"
+    return "Hello from Docker and it's working on your VPS!"
 
 @app.route("/time")
 def time():
