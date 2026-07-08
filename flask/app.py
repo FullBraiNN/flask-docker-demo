@@ -32,6 +32,24 @@ def time():
 
 @app.route("/todos")
 def get_todos():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id, title FROM todos;")
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    todos = []
+
+    for row in rows:
+        todos.append({
+            "id": row[0],
+            "title": row[1]
+        })
+
     return jsonify(todos)
 
 @app.route("/todos/<int:todo_id>")
