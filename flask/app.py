@@ -64,14 +64,28 @@ def get_todo(todo_id):
 def create_todo():
     data = request.get_json()
 
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT INTO todos (title) VALUES (%s) RETURNING id;",
+        (data["title"],)
+    )
+
+    todo_id = cur.fetchone()[0]
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
     todo = {
-        "id": len(todos) + 1,
+        "id": todo_id,
         "title": data["title"]
     }
 
-    todos.append(todo)
-
-    return jsonify(todo), 201
+    return jsonify(todo), 201 
+   
 
 @app.route("/todos/<int:todo_id>", methods=["DELETE"])
 def delete_todo(todo_id):
