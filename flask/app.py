@@ -89,10 +89,24 @@ def create_todo():
 
 @app.route("/todos/<int:todo_id>", methods=["DELETE"])
 def delete_todo(todo_id):
-    for todo in todos:
-        if todo["id"] == todo_id:
-            todos.remove(todo)
-            return jsonify({"message": "Todo deleted"})
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM todos WHERE id = %s RETURNING id;",
+        (todo_id,)
+    )
+
+    deleted = cur.fetchone()
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    if deleted:
+        return jsonify({"message": "Todo deleted"})
 
     return jsonify({"error": "Todo not found"}), 404
 
