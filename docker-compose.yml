@@ -1,9 +1,16 @@
 services:
 
-  flask:
-    build: ./flask
-    expose:
-      - "5000"
+flask:
+  build: ./flask
+
+  expose:
+    - "5000"
+
+  environment:
+    DB_HOST: postgres
+    DB_NAME: todo_db
+    DB_USER: todo_user
+    DB_PASSWORD: secret123
 
   nginx:
     image: nginx:latest
