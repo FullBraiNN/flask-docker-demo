@@ -23,6 +23,13 @@ def time():
 def get_todos():
     return jsonify(todos)
 
+@app.route("/todos/<int:todo_id>")
+def get_todo(todo_id):
+    for todo in todos:
+        if todo["id"] == todo_id:
+            return jsonify(todo)
+
+    return jsonify({"error": "Todo not found"}), 404
 
 @app.route("/todos", methods=["POST"])
 def create_todo():
