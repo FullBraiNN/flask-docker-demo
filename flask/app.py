@@ -44,6 +44,14 @@ def create_todo():
 
     return jsonify(todo), 201
 
+@app.route("/todos/<int:todo_id>", methods=["DELETE"])
+def delete_todo(todo_id):
+    for todo in todos:
+        if todo["id"] == todo_id:
+            todos.remove(todo)
+            return jsonify({"message": "Todo deleted"})
+
+    return jsonify({"error": "Todo not found"}), 404
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
