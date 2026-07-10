@@ -7,10 +7,10 @@ services:
       - "5000"
 
     environment:
-      DB_HOST: postgres
-      DB_NAME: todo_db
-      DB_USER: todo_user
-      DB_PASSWORD: secret123
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   nginx:
     image: nginx:latest
@@ -28,9 +28,9 @@ services:
     image: postgres:17
 
     environment:
-      POSTGRES_DB: todo_db
-      POSTGRES_USER: todo_user
-      POSTGRES_PASSWORD: secret123
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
