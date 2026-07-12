@@ -28,14 +28,6 @@ services:
     depends_on:
       - app
 
-  certbot:
-    image: certbot/certbot
- 
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-
-
   postgres:
     image: postgres:17
 
