@@ -20,18 +20,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
 
           script: |
-            set -e
-
-            cd /home/deploy/projects/vextra
-
-            echo "===> Updating source code..."
-            git fetch origin
-            git reset --hard origin/main
-
-            echo "===> Building and starting containers..."
-            docker compose up -d --build
-
-            echo "===> Cleaning old Docker images..."
-            docker image prune -f
-
-            echo "===> Deployment completed successfully."
+            /home/deploy/projects/vextra/scripts/deploy.sh
