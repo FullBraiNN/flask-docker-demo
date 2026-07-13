@@ -8,6 +8,9 @@ echo "===> Updating source code..."
 git fetch origin
 git reset --hard origin/main
 
+echo "===> Creating database backup..."
+./scripts/backup_db.sh
+
 echo "===> Building and starting containers..."
 docker compose up -d --build
 
