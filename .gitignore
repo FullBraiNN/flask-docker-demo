@@ -1,1 +1,18 @@
+# Environment
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Certificates
+certbot/conf/
+certbot/www/
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
