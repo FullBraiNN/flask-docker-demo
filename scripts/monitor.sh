@@ -2,21 +2,38 @@
 
 STATUS=0
 
-THRESHOLD=90
 
-DISK_USAGE=$(df / | awk 'NR==2 {print $5}' | sed 's/%//')
+check_disk() {
 
-echo "Disk Usage: ${DISK_USAGE}%"
+    THRESHOLD=90
 
-if [ "$DISK_USAGE" -ge "$THRESHOLD" ]; then
-    echo "WARNING: Disk usage is high."
-    STATUS=1
-fi
+    DISK_USAGE=$(df / | awk 'NR==2 {print $5}' | sed 's/%//')
 
-if [ "$STATUS" -eq 0 ]; then
-    echo "STATUS=OK"
-else
-    echo "STATUS=WARNING"
-fi
+    echo "Disk Usage: ${DISK_USAGE}%"
 
-exit "$STATUS"
+    if [ "$DISK_USAGE" -ge "$THRESHOLD" ]; then
+
+        echo "WARNING: Disk usage is high."
+
+        STATUS=1
+
+    fi
+
+}
+
+
+main() {
+
+    check_disk
+
+    if [ "$STATUS" -eq 0 ]; then
+        echo "STATUS=OK"
+    else
+        echo "STATUS=WARNING"
+    fi
+
+    exit "$STATUS"
+
+}
+
+main
