@@ -3,6 +3,11 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
 
+SSL_STATUS="UNKNOWN"
+SSL_DAYS_LEFT=0
+DOMAIN="vextra.cloud"
+SSL_WARNING_DAYS=15
+
 POSTGRES_STATUS="UNKNOWN"
 DOCKER_STATUS="UNKNOWN"
 STATUS=0
@@ -66,12 +71,40 @@ check_postgres() {
 
 }
 
+check_ssl() {
+
+    SSL_EXPIRY=$(echo | openssl s_client \
+        -servername "$DOMAIN" \
+        -connect "$DOMAIN:443" 2>/dev/null \
+        | openssl x509 -noout -enddate \
+        | cut -d= -f2)
+
+    SSL_EXPIRY_TS=$(date -d "$SSL_EXPIRY" +%s)
+
+    NOW_TS=$(date +%s)
+
+    SSL_DAYS_LEFT=$(( (SSL_EXPIRY_TS - NOW_TS) / 86400 ))
+
+    SSL_STATUS="OK"
+
+    if [ "$SSL_DAYS_LEFT" -le "$SSL_WARNING_DAYS" ]; then
+
+        SSL_STATUS="WARNING"
+
+        STATUS=1
+
+    fi
+
+}
+
 print_report() {
 
     echo "DISK_USAGE=$DISK_USAGE"
     echo "RAM_USAGE=$RAM_USAGE"
     echo "DOCKER_STATUS=$DOCKER_STATUS"
     echo "POSTGRES_STATUS=$POSTGRES_STATUS"
+    echo "SSL_DAYS_LEFT=$SSL_DAYS_LEFT"
+    echo "SSL_STATUS=$SSL_STATUS"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
@@ -89,6 +122,7 @@ main() {
     check_ram
     check_docker
     check_postgres
+    check_ssl
 
     print_report
 
