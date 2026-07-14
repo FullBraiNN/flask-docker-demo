@@ -1,3 +1,7 @@
+PROJECT_DIR="/home/deploy/projects/vextra"
+COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
+
+DOCKER_STATUS="UNKNOWN"
 STATUS=0
 
 DISK_USAGE=0
@@ -32,11 +36,24 @@ check_ram() {
 
 }
 
+check_docker() {
+
+    DOCKER_STATUS="OK"
+
+    CONTAINERS_DOWN=$(docker compose -f "$COMPOSE_FILE" ps --services --filter status=exited)
+
+    if [ -n "$CONTAINERS_DOWN" ]; then
+        DOCKER_STATUS="DOWN"
+        STATUS=1
+    fi
+
+}
 
 print_report() {
 
     echo "DISK_USAGE=$DISK_USAGE"
     echo "RAM_USAGE=$RAM_USAGE"
+    echo "DOCKER_STATUS=$DOCKER_STATUS"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
@@ -46,10 +63,13 @@ print_report() {
 
 }
 
+
+
 main() {
 
     check_disk
     check_ram
+    check_docker
 
     print_report
 
