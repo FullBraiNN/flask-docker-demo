@@ -1,4 +1,6 @@
-PROJECT_DIR="/home/deploy/projects/vextra"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
 COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
 
 DOCKER_STATUS="UNKNOWN"
