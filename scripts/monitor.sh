@@ -3,6 +3,8 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
 
+APP_STATUS="UNKNOWN"
+
 SSL_STATUS="UNKNOWN"
 SSL_DAYS_LEFT=0
 DOMAIN="vextra.cloud"
@@ -97,6 +99,22 @@ check_ssl() {
 
 }
 
+check_http() {
+
+    HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://$DOMAIN/health)
+
+    APP_STATUS="OK"
+
+    if [ "$HTTP_STATUS" != "200" ]; then
+
+        APP_STATUS="DOWN"
+
+        STATUS=1
+
+    fi
+
+}
+
 print_report() {
 
     echo "DISK_USAGE=$DISK_USAGE"
@@ -105,6 +123,7 @@ print_report() {
     echo "POSTGRES_STATUS=$POSTGRES_STATUS"
     echo "SSL_DAYS_LEFT=$SSL_DAYS_LEFT"
     echo "SSL_STATUS=$SSL_STATUS"
+    echo "APP_STATUS=$APP_STATUS"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
@@ -123,6 +142,7 @@ main() {
     check_docker
     check_postgres
     check_ssl
+    check_http
 
     print_report
 
