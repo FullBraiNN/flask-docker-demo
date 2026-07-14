@@ -2,7 +2,7 @@
 
 STATUS=0
 
-THRESHOLD=1
+THRESHOLD=90
 
 DISK_USAGE=$(df / | awk 'NR==2 {print $5}' | sed 's/%//')
 
