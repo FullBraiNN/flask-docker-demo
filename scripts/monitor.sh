@@ -158,7 +158,7 @@ print_report() {
     echo "SSL_STATUS=$SSL_STATUS"
     echo "APP_STATUS=$APP_STATUS"
     echo "FAIL_REASON=$FAIL_REASON"
-    echo "CPU_USAGE=$CPU_USAGE"
+    echo "CPU_USAGETTTTTTT=$CPU_USAGE"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
