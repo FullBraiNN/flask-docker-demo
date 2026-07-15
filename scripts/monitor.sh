@@ -133,6 +133,21 @@ add_fail_reason() {
 
 }
 
+check_cpu() {
+
+    THRESHOLD=90
+
+    CPU_IDLE=$(top -bn1 | grep "%Cpu(s)" | awk '{print $8}')
+
+    CPU_USAGE=$(awk "BEGIN {print 100 - $CPU_IDLE}")
+
+    if awk "BEGIN {exit !($CPU_USAGE >= $THRESHOLD)}"; then
+        echo "WARNING: CPU usage is high."
+        STATUS=1
+    fi
+
+}
+
 print_report() {
 
     echo "DISK_USAGE=$DISK_USAGE"
@@ -143,6 +158,7 @@ print_report() {
     echo "SSL_STATUS=$SSL_STATUS"
     echo "APP_STATUS=$APP_STATUS"
     echo "FAIL_REASON=$FAIL_REASON"
+    echo "CPU_USAGE=$CPU_USAGE"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
@@ -162,6 +178,7 @@ main() {
     check_postgres
     check_ssl
     check_http
+    check_cpu
 
     print_report
 
