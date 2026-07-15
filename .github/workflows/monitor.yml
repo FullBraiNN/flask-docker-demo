@@ -26,13 +26,6 @@ jobs:
           script: |
             cd /home/deploy/projects/vextra
             ./scripts/monitor.sh
- 
-            
-      - name: Show Monitor Output
-        if: always()
-
-        run: |
-          echo "${{ steps.monitor.outputs.stdout }}"
 
 
       - name: Send Telegram Alert

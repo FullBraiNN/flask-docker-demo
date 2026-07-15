@@ -3,6 +3,8 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
 
+FAIL_REASON=""
+
 APP_STATUS="UNKNOWN"
 
 SSL_STATUS="UNKNOWN"
@@ -30,6 +32,7 @@ check_disk() {
 
     if [ "$DISK_USAGE" -ge "$THRESHOLD" ]; then
         STATUS=1
+        add_fail_reason "DISK"
     fi
 
 }
@@ -42,6 +45,7 @@ check_ram() {
 
     if [ "$RAM_USAGE" -ge "$RAM_THRESHOLD" ]; then
         STATUS=1
+        add_fail_reason "RAM"
     fi
 
 }
@@ -55,6 +59,7 @@ check_docker() {
     if [ -n "$CONTAINERS_DOWN" ]; then
         DOCKER_STATUS="DOWN"
         STATUS=1
+        add_fail_reason "DOCKER"
     fi
 
 }
@@ -68,6 +73,7 @@ check_postgres() {
         POSTGRES_STATUS="DOWN"
 
         STATUS=1
+        add_fail_reason "POSTGRES"
 
     fi
 
@@ -94,6 +100,7 @@ check_ssl() {
         SSL_STATUS="WARNING"
 
         STATUS=1
+        add_fail_reason "SSL"
 
     fi
 
@@ -110,7 +117,18 @@ check_http() {
         APP_STATUS="DOWN"
 
         STATUS=1
+        add_fail_reason "APP"
 
+    fi
+
+}
+
+add_fail_reason() {
+
+    if [ -z "$FAIL_REASON" ]; then
+        FAIL_REASON="$1"
+    else
+        FAIL_REASON="$FAIL_REASON,$1"
     fi
 
 }
@@ -124,6 +142,7 @@ print_report() {
     echo "SSL_DAYS_LEFT=$SSL_DAYS_LEFT"
     echo "SSL_STATUS=$SSL_STATUS"
     echo "APP_STATUS=$APP_STATUS"
+    echo "FAIL_REASON=$FAIL_REASON"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
