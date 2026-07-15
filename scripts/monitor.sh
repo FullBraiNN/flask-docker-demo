@@ -148,6 +148,22 @@ check_cpu() {
 
 }
 
+
+check_load() {
+
+    THRESHOLD=3
+
+    LOAD_AVG=$(cat /proc/loadavg | awk '{print $1}')
+
+    echo "LOAD_AVG=${LOAD_AVG}"
+
+    if awk "BEGIN {exit !($LOAD_AVG >= $THRESHOLD)}"; then
+        echo "WARNING: System load is high."
+        STATUS=1
+    fi
+
+}
+
 print_report() {
 
     echo "DISK_USAGE=$DISK_USAGE"
@@ -159,6 +175,7 @@ print_report() {
     echo "APP_STATUS=$APP_STATUS"
     echo "FAIL_REASON=$FAIL_REASON"
     echo "CPU_USAGETTTTTTT=$CPU_USAGE"
+    echo "LOAD_AVG=$LOAD_AVG"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
@@ -179,6 +196,7 @@ main() {
     check_ssl
     check_http
     check_cpu
+    check_load
 
     print_report
 
