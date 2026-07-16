@@ -3,6 +3,8 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
 
+LOG_FILE="/var/log/vextra/monitor.log"
+
 FAIL_REASON=""
 
 APP_STATUS="UNKNOWN"
@@ -164,25 +166,54 @@ check_load() {
 
 }
 
+
+log() {
+
+    if [ -d "$(dirname "$LOG_FILE")" ]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') | $1" >> "$LOG_FILE"
+    fi
+
+}
+
 print_report() {
 
     echo "DISK_USAGE=$DISK_USAGE"
+    log "DISK_USAGE=$DISK_USAGE"
+
     echo "RAM_USAGE=$RAM_USAGE"
+    log "RAM_USAGE=$RAM_USAGE"
+
     echo "DOCKER_STATUS=$DOCKER_STATUS"
+    log "DOCKER_STATUS=$DOCKER_STATUS"
+
     echo "POSTGRES_STATUS=$POSTGRES_STATUS"
+    log "POSTGRES_STATUS=$POSTGRES_STATUS"
+
     echo "SSL_DAYS_LEFT=$SSL_DAYS_LEFT"
+    log "SSL_DAYS_LEFT=$SSL_DAYS_LEFT"
+
     echo "SSL_STATUS=$SSL_STATUS"
+    log "SSL_STATUS=$SSL_STATUS"
+
     echo "APP_STATUS=$APP_STATUS"
+    log "APP_STATUS=$APP_STATUS"
+
     echo "FAIL_REASON=$FAIL_REASON"
+    log "FAIL_REASON=$FAIL_REASON"
+
     echo "CPU_USAGETTTTTTT=$CPU_USAGE"
+    log "CPU_USAGETTTTTTT=$CPU_USAGE"
+
     echo "LOAD_AVG=$LOAD_AVG"
+    log "LOAD_AVG=$LOAD_AVG"
 
     if [ "$STATUS" -eq 0 ]; then
         echo "STATUS=OK"
+        log "STATUS=OK" 
     else
         echo "STATUS=WARNING"
+        log "STATUS=WARNING" 
     fi
-
 }
 
 
