@@ -1,37 +1,38 @@
-name: Deploy to VPS
+#name: Deploy to VPS
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  deploy:
-    name: Deploy Application
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     name: Deploy Application
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Deploy via SSH
-        id: deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#     steps:
+#       - name: Deploy via SSH
+#         id: deploy
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-          script: |
-            /home/deploy/projects/vextra/scripts/deploy.sh
+#           script: |
+#             /home/deploy/projects/vextra/scripts/deploy.sh
 
-      - name: Notify Success
-        if: success()
-        run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-          -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -d text="✅ Vextra deployed successfully%0ARepository: ${{ github.repository }}%0ABranch: ${{ github.ref_name }}%0ACommit: ${{ github.sha }}"
+#       - name: Notify Success
+#         if: success()
+#         run: |
+#           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+#           -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+#           -d text="✅ Vextra deployed successfully%0ARepository: ${{ github.repository }}%0ABranch: ${{ github.ref_name }}%0ACommit: ${{ github.sha }}"
 
-      - name: Notify Failure
-        if: failure()
-        run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-          -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -d text="❌ Vextra deployment FAILED%0ARepository: ${{ github.repository }}%0ABranch: ${{ github.ref_name }}%0ACommit: ${{ github.sha }}"
+#       - name: Notify Failure
+#         if: failure()
+#         run: |
+#           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+#           -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+#           -d text="❌ Vextra deployment FAILED%0ARepository: ${{ github.repository }}%0ABranch: ${{ github.ref_name }}%0ACommit: ${{ github.sha }}"
+# #
